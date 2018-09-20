@@ -7,7 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: HomeComponent,
-    data: { title: 'Dashboard' },
+    data: { title: 'My Pipeline' },
   },
 ];
 

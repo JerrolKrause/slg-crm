@@ -6,9 +6,9 @@ $brand-primary-lt: #507ec0;
 $brand-primary-dk: #183c70;
 
 /***** Brand Colors *****/
-$interact-primary: #d72027;
-$interact-primary-lt: #f2a7aa;
-$interact-primary-dk: #d72027;
+$interact-primary: $brand-primary-dk;
+$interact-primary-lt: $brand-primary;
+$interact-primary-dk: $brand-primary-dk;
 
 /***** Borders *****/
 $border                     : $brand-primary;

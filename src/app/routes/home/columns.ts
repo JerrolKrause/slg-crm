@@ -17,6 +17,21 @@ export const columns: Datagrid.Column[] = [
     width:100
   },
   {
+    prop: 'contact',
+    label: 'Contact',
+    columnType: 'string',
+    canSort: true,
+    canGroup: true,
+    canFilter: true,
+    canReorder: true,
+    canResize: true,
+    canDelete: true,
+    canPinLeft: true,
+    canEdit: true,
+    canSearch: true,
+    width: 150
+  },
+  {
     prop: 'src',
     label: 'Lead Source',
     columnType: 'string',
@@ -103,20 +118,6 @@ export const columns: Datagrid.Column[] = [
     canEdit: true,
     canSearch: true,
     width: 75
-  },
-  {
-    prop: 'contact',
-    label: 'Contact',
-    columnType: 'string',
-    canSort: true,
-    canGroup: true,
-    canFilter: true,
-    canReorder: true,
-    canResize: true,
-    canDelete: true,
-    canPinLeft: true,
-    canEdit: true,
-    canSearch: true,
   },
   {
     prop: 'status',

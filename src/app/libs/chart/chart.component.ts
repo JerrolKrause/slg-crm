@@ -193,7 +193,7 @@ export class ChartComponent implements OnInit, OnChanges, AfterViewInit, OnDestr
       animationDuration: 600,
       title: {
         text: this.titleChart,
-        fontSize: 18,
+        fontSize: 14,
         fontFamily: this.styling.fontFamily,
         fontWeight: this.styling.fontWeight,
       },

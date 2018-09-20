@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   public sidebarOpen$ = this.ui.select.sidebarOpen$;
   public formMain: FormGroup;
   public isEditing: boolean;
-  public sidebarOpen = false;
+  public sidebarOpen = true;
 
   public filterGlobal: Datagrid.FilterGlobal = {
     term: '',

@@ -43,12 +43,16 @@
       <div ngbDropdown placement="bottom-left" class="d-inline-block mr-2">
         <button class="btn btn-outline-primary btn-sm" id="dropdownBasic1" ngbDropdownToggle><i class="fa fa-columns"></i></button>
         <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
-          <button class="dropdown-item active"><i class="fa fa-th-large" aria-hidden="true"></i> Lead Pipeline</button>
-          <button class="dropdown-item"><i class="fa fa-th-large" aria-hidden="true"></i> Lead Sources</button>
-          <button class="dropdown-item"><i class="fa fa-th-large" aria-hidden="true"></i> Active Loans</button>
+          <button class="dropdown-item active"><i class="fa fa-th-large" aria-hidden="true"></i> My Leads</button>
+          <button class="dropdown-item"><i class="fa fa-th-large" aria-hidden="true"></i> West Coast Leads</button>
+          <button class="dropdown-item"><i class="fa fa-th-large" aria-hidden="true"></i> Early Bird Dial Campaign</button>
+          <button class="dropdown-item"><i class="fa fa-th-large" aria-hidden="true"></i> Low Rate Quotes</button>
+          <div class="dropdown-divider"></div>
+          <button class="dropdown-item"><i class="fa fa-th-large mr-1" aria-hidden="true"></i> <em>Shark Tank</em></button>
+          <button class="dropdown-item"><i class="fa fa-th-large mr-1" aria-hidden="true"></i> <em>Aged Leads</em></button>
         </div>
       </div> 
-      <h2 class="d-inline-block mr-2" style="padding-top:4px;">Lead Pipeline</h2>
+      <h2 class="d-inline-block mr-2" style="padding-top:4px;">My Leads</h2>
       <small class="d-inline"><em>Contacts organized by lead source </em></small>
 
     </div>
@@ -58,9 +62,9 @@
     <div class="col-12 col-md-4">
       <app-chart *ngIf="chartLeadSources && chartLeadSources?.length"
                  [type]="'pie'"
-                 [title]="'Lead Sources'"
+                 [titleChart]="'Leads by Lead Source'"
                  [data]="chartLeadSources"
-                 [colorGradient]="['#507ec0', '#d72027']"
+                 [colorGradient]="['#4f7ec0', '#d72027']"
                  [showLegend]="false"
                  [height]="'20vh'">
       </app-chart>
@@ -68,9 +72,9 @@
     <div class="col-12 col-md-4">
       <app-chart *ngIf="chartStates && chartStates?.length"
                  [type]="'pie'"
-                 [title]="'States'"
+                 [titleChart]="'Leads by State'"
                  [data]="chartStates"
-                 [colorGradient]="['#507ec0', '#d72027']"
+                 [colorGradient]="['#4f7ec0', '#d72027']"
                  [showLegend]="false"
                  [height]="'20vh'">
       </app-chart>
@@ -78,9 +82,9 @@
     <div class="col-12 col-md-4">
       <app-chart *ngIf="chartAge && chartAge?.length"
                  [type]="'bar'"
-                 [title]="'Lead Age'"
+                 [titleChart]="'Leads by Age'"
                  [data]="chartAge"
-                 [colorGradient]="['#507ec0', '#d72027']"
+                 [colorGradient]="['#4f7ec0', '#d72027']"
                  [showLegend]="false"
                  [height]="'20vh'">
       </app-chart>
