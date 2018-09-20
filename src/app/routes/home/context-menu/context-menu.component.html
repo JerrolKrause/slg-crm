@@ -1,0 +1,35 @@
+<context-menu #contextMenu>
+
+  <ng-template contextMenuItem (execute)="doSomething()">
+    <i class="fa fa-phone" aria-hidden="true"></i> Dial
+  </ng-template>
+  <ng-template contextMenuItem let-item (execute)="doSomething()">
+    <i class="fa fa-phone" aria-hidden="true"></i>  Dial from here
+  </ng-template>
+  <ng-template contextMenuItem divider="true"></ng-template>
+
+  <ng-template contextMenuItem let-item (execute)="doSomething()">
+    <i class="fa fa-envelope" aria-hidden="true"></i> Email
+  </ng-template>
+  <ng-template contextMenuItem let-item (execute)="doSomething()">
+    <i class="fa fa-comments" aria-hidden="true"></i> SMS
+  </ng-template>
+  <ng-template contextMenuItem divider="true"></ng-template>
+
+  <ng-template contextMenuItem let-item [subMenu]="subMenuTags">
+    <i class="fa fa-tag" aria-hidden="true"></i> Tags
+  </ng-template>
+  
+  <context-menu #subMenuTags>
+    <ng-template contextMenuItem (execute)="doSomething()">
+      <div class="tag" style="background-color: red;"></div> Urgent
+    </ng-template>
+    <ng-template contextMenuItem (execute)="doSomething()">
+      <div class="tag" style="background-color: orange;"></div>  Followup
+    </ng-template>
+    <ng-template contextMenuItem (execute)="doSomething()">
+      <div class="tag" style="background-color: blue;"></div> To Do Later
+    </ng-template>
+  </context-menu>
+
+</context-menu>

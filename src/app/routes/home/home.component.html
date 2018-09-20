@@ -1,46 +1,103 @@
 <div id="app-home" class="container-fluid" *ngIf="{ users: users$ | async, sidebarOpen : sidebarOpen$ | async } as route">
 
-  <div class="card mb-3">
+  <div class="card mb-2">
     <div class="card-header p-2">
 
       <div class="float-right">
 
-        <app-counter class="mr-2"></app-counter>
+        <!--
+    <button class="btn btn-sm btn-outline-primary mr-1 d-inline-block"
+            title="Toggle multi-screen view"
+            [ngClass]="{ 'enabled' : ui.select.multiScreen$ | async }"
+            (click)="ui.multiScreenToggle()">
+      <i aria-hidden="true" class="fa fa-external-link-square"></i>
+    </button>
+    -->
+        <!-- Filter datatable -->
+        <form class="form-inline mr-2 d-inline-block">
+          <label class="icon icon-filter" style="position:relative;">
+            <input class="form-control form-control-sm filterSearch" type="text" name="filterGlobal" placeholder="Filter name or website" [ngModel]="filterGlobal.term" (ngModelChange)="onfilterGlobal($event)" data-qa="hp-filter-global" />
+            <a (click)="filterGlobal.term = null; onfilterGlobal()" *ngIf="filterGlobal.term" style="position:absolute;right: 10px;top: 4px;"><i class="fa fa-remove"></i></a>
+          </label>
+        </form>
 
-        <button class="btn btn-sm btn-outline-primary mr-1 d-inline-block"
-                title="Toggle multi-screen view"
-                [ngClass]="{ 'enabled' : ui.select.multiScreen$ | async }"
-                (click)="ui.multiScreenToggle()">
-          <i aria-hidden="true" class="fa fa-external-link-square"></i>
+        <button class="btn btn-outline-primary btn-sm mr-2" (click)="usersRefresh()" [disabled]="route?.users?.loading">
+          <i class="fa fa-refresh"></i>
         </button>
 
-        <button class="btn btn-sm" (click)="sidebarToggle(route.sidebarOpen)" [ngClass]="route.sidebarOpen ? 'btn-danger' : 'btn-primary'">
-          <i class="fa fa-user mr-1"></i>
-          Toggle User Sidebar
-        </button>
+
+
+        <div class="btn-group">
+          <button class="btn btn-sm" (click)="chartToggle()" [ngClass]="chartsVisible ? 'btn-primary' : 'btn-outline-primary'">
+            <i class="fa fa-pie-chart mr-1"></i>
+            Charts
+          </button>
+          <button class="btn btn-sm" (click)="sidebarToggle(route.sidebarOpen)" [ngClass]="route.sidebarOpen ? 'btn-primary' : 'btn-outline-primary'">
+            <i class="fa fa-user mr-1"></i>
+            Lead Details
+          </button>
+        </div>
+
       </div>
 
-      <button class="btn btn-outline-primary btn-sm mr-2" (click)="usersRefresh()" [disabled]="route?.users?.loading">
-        <i class="fa fa-refresh"></i>
-      </button>
+      <div ngbDropdown placement="bottom-left" class="d-inline-block mr-2">
+        <button class="btn btn-outline-primary btn-sm" id="dropdownBasic1" ngbDropdownToggle><i class="fa fa-columns"></i></button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button class="dropdown-item active"><i class="fa fa-th-large" aria-hidden="true"></i> Lead Pipeline</button>
+          <button class="dropdown-item"><i class="fa fa-th-large" aria-hidden="true"></i> Lead Sources</button>
+          <button class="dropdown-item"><i class="fa fa-th-large" aria-hidden="true"></i> Active Loans</button>
+        </div>
+      </div> 
+      <h2 class="d-inline-block mr-2" style="padding-top:4px;">Lead Pipeline</h2>
+      <small class="d-inline"><em>Contacts organized by lead source </em></small>
 
-      <!-- Filter datatable -->
-      <form class="form-inline mr-3 d-inline-block">
-        <label class="icon icon-filter" style="position:relative;">
-          <input class="form-control form-control-sm filterSearch" type="text" name="filterGlobal" placeholder="Filter name or website" [ngModel]="filterGlobal.term" (ngModelChange)="onfilterGlobal($event)" data-qa="hp-filter-global" />
-          <a (click)="filterGlobal.term = null; onfilterGlobal()" *ngIf="filterGlobal.term" style="position:absolute;right: 10px;top: 4px;"><i class="fa fa-remove"></i></a>
-        </label>
-      </form>
     </div>
   </div>
 
+  <div class="row mb-2" *ngIf="chartsVisible">
+    <div class="col-12 col-md-4">
+      <app-chart *ngIf="chartLeadSources && chartLeadSources?.length"
+                 [type]="'pie'"
+                 [title]="'Lead Sources'"
+                 [data]="chartLeadSources"
+                 [colorGradient]="['#507ec0', '#d72027']"
+                 [showLegend]="false"
+                 [height]="'20vh'">
+      </app-chart>
+    </div>
+    <div class="col-12 col-md-4">
+      <app-chart *ngIf="chartStates && chartStates?.length"
+                 [type]="'pie'"
+                 [title]="'States'"
+                 [data]="chartStates"
+                 [colorGradient]="['#507ec0', '#d72027']"
+                 [showLegend]="false"
+                 [height]="'20vh'">
+      </app-chart>
+    </div>
+    <div class="col-12 col-md-4">
+      <app-chart *ngIf="chartAge && chartAge?.length"
+                 [type]="'bar'"
+                 [title]="'Lead Age'"
+                 [data]="chartAge"
+                 [colorGradient]="['#507ec0', '#d72027']"
+                 [showLegend]="false"
+                 [height]="'20vh'">
+      </app-chart>
+    </div>
+  </div>
+  
+
   <app-api-state [state]="route.users">
+
+
+    
 
     <div class="alert alert-warning icon" *ngIf="!route?.users?.data?.length">No users found</div>
 
     <div class="row">
-      <div class="col-12" [ngClass]="route.sidebarOpen ? 'col-md-8' : 'col-md-12' ">
-        <div style="position:relative;height:calc(100vh - 150px)">
+      <div class="col-12" [ngClass]="route.sidebarOpen ? 'col-md-9' : 'col-md-12' ">
+        <div style="position:relative;" [ngStyle]="{ 'height': chartsVisible ? 'calc(77vh - 150px)' : 'calc(100vh - 150px)'}">
           <datagrid #datagrid
                     [rows]="route.users.data"
                     [columns]="columns"
@@ -49,15 +106,50 @@
                     [filterGlobal]="filterGlobal"
                     (onStateChange)="onStateChange($event)"
                     (onRowsSelected)="onRowsSelected($event)"
-                    (onRowUpdated)="onRowUpdated($event)">
+                    (onRowUpdated)="onRowUpdated($event)"
+                    (onRightClickMenu)="onRightClickMenu($event)">
+
+            <datagrid-column prop="tags">
+              <ng-template let-value="value" let-column="column" let-row="row" datagrid-cell-template>
+                <div class="tag" style="background:red;" [title]="value" *ngIf="value === 'Urgent'">{{value}}</div>
+                <div class="tag" style="background:blue;" [title]="value" *ngIf="value === 'Followup'">{{value}}</div>
+                <div class="tag" style="background:orange;" [title]="value" *ngIf="value === 'Contact Later'">{{value}}</div>
+              </ng-template>
+            </datagrid-column>
+
+            <datagrid-column prop="status">
+              <ng-template let-value="value" let-column="column" let-row="row" datagrid-cell-template>
+                <div class="pr-3 pt-1">
+                  <ngb-progressbar type="success" [value]="100" *ngIf="value === 4"></ngb-progressbar>
+                  <ngb-progressbar type="info" [value]="75" *ngIf="value === 3"></ngb-progressbar>
+                  <ngb-progressbar type="warning" [value]="50" *ngIf="value === 2"></ngb-progressbar>
+                  <ngb-progressbar type="danger" [value]="25" *ngIf="value === 1"></ngb-progressbar>
+                </div>
+              </ng-template>
+            </datagrid-column>
+
+            <datagrid-column prop="age">
+              <ng-template let-value="value" let-column="column" let-row="row" datagrid-cell-template>
+                {{ value }} hours
+              </ng-template>
+            </datagrid-column>
+
+            <datagrid-column prop="contact">
+              <ng-template let-value="value" let-column="column" let-row="row" datagrid-cell-template>
+                <div class="btn-group w-100 btn-group-xsm">
+                  <a class="btn btn-xs btn-outline-primary" style="width:33.33%" target="_blank" href="assets/img/scripter.png"><i class="fa fa-phone" aria-hidden="true"></i> Call</a>
+                  <button class="btn btn-xs btn-outline-primary" style="width:33.33%"><i class="fa fa-envelope" aria-hidden="true"></i> Email</button>
+                  <button class="btn btn-xs btn-outline-primary" style="width:33.33%"><i class="fa fa-comments" aria-hidden="true"></i> Text</button>
+                </div>
+
+              </ng-template>
+            </datagrid-column>
 
             <!-- Custom templates, prop corresponds to column property -->
             <datagrid-column prop="phone">
-              <!-- Header template -->
               <ng-template let-value="value" let-column="column" let-row="row" datagrid-header-template>
                 <i class="fa fa-phone" aria-hidden="true"></i> Phone Number
               </ng-template>
-              <!-- Cell template -->
               <ng-template let-value="value" let-column="column" let-row="row" datagrid-cell-template>
                 <a href="tel:{{ value | phoneNumber : true }}">{{ value | phoneNumber }}</a>
               </ng-template>
@@ -75,65 +167,125 @@
           </datagrid>
         </div>
       </div>
-      <div class="col-12 col-md-4" *ngIf="route.sidebarOpen">
-        <a class="float-right" (click)="userStopEdit()" *ngIf="isEditing"><i class="fa fa-user-plus" aria-hidden="true"></i> Add New User</a>
-        <h2 *ngIf="!isEditing"> <i class="fa fa-user-plus" aria-hidden="true"></i> Add User</h2>
-        <h2 *ngIf="isEditing"><i class="fa fa-user" aria-hidden="true"></i> Updating User</h2>
-        <hr />
+      <div class="col-12 col-md-3" *ngIf="route.sidebarOpen" id="sidebar" [ngStyle]="{ 'height': chartsVisible ? 'calc(77vh - 150px)' : 'calc(100vh - 150px)'}">
 
-        <form [formGroup]="formMain" novalidate (ngSubmit)="userSubmit()">
+        <div class="card" *ngIf="!lead">
+          <div class="card-body p-2"><small><em>Please select a lead to view details</em></small></div>
+        </div>
 
-          <div class="form-group row">
-            <label for="username" class="col col-12 col-md-3 col-form-label">Username<sup class="red">*</sup></label>
-            <div class="col col-12 col-md-9">
-              <input class="form-control" type="text" id="username" formControlName="username">
+        <ng-container *ngIf="lead">
+          <h3 class="title mb-2"><i class="fa fa-user" aria-hidden="true"></i> {{lead?.name}}</h3>
+          <div class="btn-group w-100 mb-2">
+            <a class="btn btn-xs btn-primary" style="width:33.33%" target="_blank" href="assets/img/scripter.png"><i class="fa fa-phone" aria-hidden="true"></i> Call</a>
+            <button class="btn btn-xs btn-primary" style="width:33.33%"><i class="fa fa-envelope" aria-hidden="true"></i> Email</button>
+            <button class="btn btn-xs btn-primary" style="width:33.33%"><i class="fa fa-comments" aria-hidden="true"></i> Text</button>
+          </div>
+          <div class="card card-sm">
+            <div class="card-header"><i class="fa fa-info-circle" aria-hidden="true"></i> Lead Information</div>
+            <div class="card-body p-2">
+              <table class="table table-sm mb-0" *ngIf="lead" style="border-top:0;">
+                <tbody>
+                  <tr>
+                    <td style="width:30%;border-top:0;"><strong>Name:</strong></td>
+                    <td style="border-top:0;">{{lead?.name}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Email:</strong></td>
+                    <td>{{lead?.email}}</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Phone:</strong></td>
+                    <td><a href="tel:{{ lead?.phone | phoneNumber : true }}">{{ lead?.phone | phoneNumber }}</a></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
-          <div class="form-group row">
-            <label for="name" class="col col-12 col-md-3 col-form-label">Name<sup class="red">*</sup></label>
-            <div class="col col-12 col-md-9">
-              <input class="form-control" type="text" id="name" formControlName="name">
+          <div class="card card-sm">
+            <div class="card-header"><i class="fa fa-home" aria-hidden="true"></i> Property Information</div>
+            <div class="card-body p-2">
+              <table class="table table-sm mb-0" *ngIf="lead" style="border-top:0;">
+                <tbody>
+                  <tr>
+                    <td style="width:30%;border-top:0;"><strong>Address:</strong></td>
+                    <td style="border-top:0;">23 Maple Street, Irvine CA 92604</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Type</strong></td>
+                    <td>Single Family Residence</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Occupied</strong></td>
+                    <td>Owner Occupied</td>
+                  </tr>
+                  <tr>
+                    <td><strong>County</strong></td>
+                    <td>Orange</td>
+                  </tr>
+                  <tr>
+                    <td><strong>Value</strong></td>
+                    <td>$450,000</td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
-          <div class="form-group row">
-            <label for="website" class="col col-12 col-md-3 col-form-label">Website</label>
-            <div class="col col-12 col-md-9">
-              <input class="form-control" type="text" id="website" formControlName="website">
+          <div class="card card-sm">
+            <div class="card-header"><i class="fa fa-hand-o-right" aria-hidden="true"></i> Touch History</div>
+            <div class="card-body p-0">
+                <table class="table table-sm table-bordered small mb-0">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Time</th>
+                      <th>Details</th>
+                      <th style="width: 20px;"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>5/14/18</td>
+                      <td>6:45am</td>
+                      <td>Outbound Dial</td>
+                      <td><i class="fa fa-arrow-right red" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                      <td>5/14/18</td>
+                      <td>5:45am</td>
+                      <td>Outbound Dial</td>
+                      <td><i class="fa fa-arrow-right red" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                      <td>5/14/18</td>
+                      <td>4:45am</td>
+                      <td>Inbound Dial (spoke with Jason Brown) <a href=""> <i class="fa fa-headphones" aria-hidden="true"></i> Listen To Call</a></td>
+                      <td><i class="fa fa-arrow-left green" aria-hidden="true"></i></td>
+                    </tr>
+                    <tr>
+                      <td>5/14/18</td>
+                      <td>3:45am</td>
+                      <td>Outbound Dial</td>
+                      <td><i class="fa fa-arrow-right red" aria-hidden="true"></i></td>
+                    </tr>
+                  </tbody>
+                </table>
             </div>
           </div>
 
-          <div class="form-group row">
-            <label for="email" class="col col-12 col-md-3 col-form-label">Email</label>
-            <div class="col col-12 col-md-9">
-              <input class="form-control" type="email" id="email" formControlName="email">
-            </div>
-          </div>
-
-          <div class="form-group row">
-            <label for="phone" class="col col-12 col-md-3 col-form-label">Phone</label>
-            <div class="col col-12 col-md-9">
-              <input class="form-control" type="text" id="phone" formControlName="phone">
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-primary float-right" [disabled]="route?.users?.modifying || formMain.invalid" [ngClass]="{ 'btn-waiting' : route?.users?.modifying }">
-            <ng-container *ngIf="!isEditing">
-              <i class="fa fa-user-plus" aria-hidden="true"></i> Add User
-            </ng-container>
-            <ng-container *ngIf="isEditing">
-              <i class="fa fa-user" aria-hidden="true"></i> Update User
-            </ng-container>
-          </button>
-
-        </form>
+        </ng-container>
 
       </div>
     </div>
+
+
+
+
 
   </app-api-state>
 
 
 </div>
 
+<app-context-menu #contextMenu></app-context-menu>

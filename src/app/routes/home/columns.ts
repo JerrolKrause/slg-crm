@@ -1,6 +1,50 @@
 import { Datagrid } from '$libs';
 
 export const columns: Datagrid.Column[] = [
+{
+    prop: 'tags',
+    label: 'Tags',
+    columnType: 'string',
+    canSort: true,
+    canGroup: true,
+    canFilter: true,
+    canReorder: true,
+    canResize: true,
+    canDelete: true,
+    canPinLeft: true,
+    canEdit: true,
+    canSearch: true,
+    width:100
+  },
+  {
+    prop: 'src',
+    label: 'Lead Source',
+    columnType: 'string',
+    canSort: true,
+    canGroup: true,
+    canFilter: true,
+    canReorder: true,
+    canResize: true,
+    canDelete: true,
+    canPinLeft: true,
+    canEdit: true,
+    canSearch: true,
+  },
+  {
+    prop: 'age',
+    label: 'Lead Age',
+    columnType: 'string',
+    canSort: true,
+    canGroup: true,
+    canFilter: true,
+    canReorder: true,
+    canResize: true,
+    canDelete: true,
+    canPinLeft: true,
+    canEdit: true,
+    canSearch: true,
+    width: 100
+  },
   {
     prop: 'name',
     label: 'Name',
@@ -15,21 +59,7 @@ export const columns: Datagrid.Column[] = [
     canEdit: true,
     canSearch: true,
   },
-  {
-    prop: 'username',
-    label: 'Username',
-    columnType: 'string',
-    width: 70,
-    canSort: true,
-    canGroup: true,
-    canFilter: true,
-    canReorder: true,
-    canResize: true,
-    canDelete: true,
-    canPinLeft: true,
-    canEdit: true,
-    canSearch: true,
-  },
+  
   {
     prop: 'email',
     label: 'Email',
@@ -57,10 +87,26 @@ export const columns: Datagrid.Column[] = [
     canPinLeft: true,
     canEdit: true,
     canSearch: true,
+    width: 100
   },
   {
-    prop: 'website',
-    label: 'Website',
+    prop: 'state',
+    label: 'State',
+    columnType: 'string',
+    canSort: true,
+    canGroup: true,
+    canFilter: true,
+    canReorder: true,
+    canResize: true,
+    canDelete: true,
+    canPinLeft: true,
+    canEdit: true,
+    canSearch: true,
+    width: 75
+  },
+  {
+    prop: 'contact',
+    label: 'Contact',
     columnType: 'string',
     canSort: true,
     canGroup: true,
@@ -73,8 +119,8 @@ export const columns: Datagrid.Column[] = [
     canSearch: true,
   },
   {
-    prop: 'delete',
-    label: 'Delete User',
+    prop: 'status',
+    label: 'Lead Status',
     columnType: 'string',
     canSort: true,
     canGroup: true,
@@ -85,5 +131,6 @@ export const columns: Datagrid.Column[] = [
     canPinLeft: true,
     canEdit: true,
     canSearch: true,
+    width: 75
   },
 ];

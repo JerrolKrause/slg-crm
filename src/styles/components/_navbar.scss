@@ -1,10 +1,12 @@
 // Global branded styling. App specific styling should NOT go in this file
 header {
-  @include gradient($bg-primary-dk,$bg-primary-lt);
+  // @include gradient($bg-primary-dk,$bg-primary-lt);
+  background: #507ec0;
   .navbar-brand { color: #fff; padding-top: .5rem; padding-bottom: .5rem;
     strong { color: #fff; }
     .fa { color: yellow; }
   }
+  .fa { color: $interact-primary; }
   .logo { text-shadow: 1px 1px 5px rgba(255,255,255,.3); color: $interact-primary; }
 
   .search-group { padding: 0.5em 1em;

@@ -7,6 +7,7 @@ import { AppStore } from '$shared';
 // import { Observable, combineLatest } from 'rxjs';
 // import { map } from 'rxjs/operators';
 // const keyBy = require('lodash/keyBy');
+const random = require('lodash/random');
 
 // Mapped/source selectors for reuse or transforming data
 const selectors = {
@@ -14,7 +15,22 @@ const selectors = {
     (state: AppStore.Root) => state.api.users,
     users => {
       if (users && users.data) {
-        // Modify data before returning to selector
+        users.data = [...users.data, ...users.data, ...users.data, ...users.data, ...users.data];
+
+        users.data = users.data.map(user => {
+          const states = ['CA', 'WA', 'CO', 'NY', 'OR', 'NV'];
+          const sources = ['Lending Tree', 'Direct', 'Call Center', 'Customer Referral'];
+          const tags = ['Urgent', 'Followup', 'Contact Later'];
+          return {
+            status: random(1, 4),
+            state: states[Math.floor(Math.random() * states.length)],
+            src: sources[Math.floor(Math.random() * sources.length)],
+            age: random(1, 10),
+            tags: tags[Math.floor(Math.random() * tags.length)],
+            leadRand: random(1, 10),
+            ...user
+          }
+        });
       }
       return users;
     },

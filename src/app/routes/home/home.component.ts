@@ -8,7 +8,7 @@ import { UIStoreService } from '$ui';
 import { Models } from '$models';
 import { DesktopUtils } from '$utils';
 import { columns } from './columns';
-import { Datagrid } from '$libs';
+import { Datagrid, ContextService } from '$libs';
 
 @Component({
   selector: 'app-home',
@@ -31,6 +31,9 @@ export class HomeComponent implements OnInit, OnDestroy {
     props: ['name', 'website'],
   };
 
+  public lead: Models.User;
+  public chartsVisible = true;
+
   // Inputs
   public options: Datagrid.Options = {
     scrollbarH: true,
@@ -43,14 +46,74 @@ export class HomeComponent implements OnInit, OnDestroy {
 
   public columns: Datagrid.Column[] = columns;
 
+  public chartLeadSources: CanvasJS.ChartDataSeriesOptions[] = [];
+  public chartStates: CanvasJS.ChartDataSeriesOptions[] = [];
+  public chartAge: CanvasJS.ChartDataSeriesOptions[] = [];
   /** Hold subs for unsub */
   private subs: Subscription[] = [];
 
-  constructor(private api: ApiService, public ui: UIStoreService, private fb: FormBuilder, private ref: ChangeDetectorRef) { }
+  constructor(private api: ApiService, public ui: UIStoreService, private fb: FormBuilder, private ref: ChangeDetectorRef, private menu: ContextService) { }
 
   public ngOnInit() {
     // Get users and load into store
     this.api.users.get().subscribe();
+
+    // Map chart data
+    this.users$.subscribe(users => {
+      if (users && users.data) {
+        const mapped: { [key: string]: CanvasJS.ChartDataPoint } = {};
+        const states: { [key: string]: CanvasJS.ChartDataPoint } = {};
+        const age: { [key: string]: CanvasJS.ChartDataPoint } = {};
+
+        users.data.forEach(user => {
+          // lead source
+          if (!mapped[user.src]) {
+            mapped[user.src] = {
+              label: user.src,
+              y: 1
+            }
+          } else {
+            mapped[user.src].y = mapped[user.src].y + 1;
+          }
+          // state
+          if (!states[user.state]) {
+            states[user.state] = {
+              label: user.state,
+              y: 1
+            }
+          } else {
+            states[user.state].y = states[user.state].y + 1;
+          }
+
+          // age
+          if (!age[String(user.age)]) {
+            age[String(user.age)] = {
+              label: String(user.age),
+              y: 1
+            }
+          } else {
+            age[String(user.age)].y = age[String(user.age)].y + 1;
+          }
+        });
+        const chartLeadSources: CanvasJS.ChartDataSeriesOptions[] = [{ dataPoints: [] }];
+        const chartStates: CanvasJS.ChartDataSeriesOptions[] = [{ dataPoints: [] }];
+        const chartAge: CanvasJS.ChartDataSeriesOptions[] = [{ dataPoints: [] }];
+
+        for (let key in mapped) {
+          chartLeadSources[0].dataPoints.push(mapped[key]);
+        }
+        for (let key in states) {
+          chartStates[0].dataPoints.push(states[key]);
+        }
+        for (let key in age) {
+          chartAge[0].dataPoints.push(age[key]);
+        }
+        this.chartLeadSources = chartLeadSources;
+        this.chartStates = chartStates;
+        this.chartAge = chartAge;
+      }
+
+    });
 
     // Formgroup
     this.formMain = this.fb.group({
@@ -63,6 +126,11 @@ export class HomeComponent implements OnInit, OnDestroy {
       username: ['', [Validators.required]],
       website: ['', []],
     });
+  }
+
+
+  public onRightClickMenu($event: MouseEvent) {
+    this.menu.open('home', $event, this.lead);
   }
 
   /**
@@ -82,37 +150,20 @@ export class HomeComponent implements OnInit, OnDestroy {
     });
   }
 
+  public chartToggle() {
+    this.chartsVisible = !this.chartsVisible;
+    setTimeout(() => {
+      this.datagrid.viewCreate();
+      this.ref.detectChanges();
+    });
+  }
+
   /**
    * Update the global filter term
    * @param searchTerm
    */
   public onfilterGlobal(searchTerm: string = null) {
     this.filterGlobal = { ...this.filterGlobal, term: searchTerm };
-  }
-
-  /**
-   * Stop editing to create a new user
-   */
-  public userStopEdit() {
-    this.formMain.reset();
-    this.isEditing = false;
-  }
-
-  /**
-   * Load user into editing pane
-   * @param user
-   */
-  public userEdit(user: Models.User) {
-    this.formMain.patchValue(user);
-    this.isEditing = true;
-  }
-
-  /**
-   * Delete user
-   * @param user
-   */
-  public userDelete(user: Models.User) {
-    this.api.users.delete(user).subscribe();
   }
 
   /**
@@ -129,8 +180,7 @@ export class HomeComponent implements OnInit, OnDestroy {
    */
   public onRowsSelected(users: Models.User[]) {
     if (users && users[0]) {
-      this.formMain.patchValue(users[0]);
-      this.isEditing = true;
+      this.lead = users[0];
       DesktopUtils.copyToClipboard(users[0].phone); // Copy phone number to clipboard
     }
   }

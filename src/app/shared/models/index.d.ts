@@ -24,6 +24,10 @@ export declare namespace Models {
 
   export interface User {
     id: number;
+    src: string;
+    state: string;
+    status: string;
+    age: number;
     name?: string;
     username: string;
     email?: string;
